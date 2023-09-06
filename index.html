@@ -55,14 +55,21 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav menu dk_menu ml-auto">
                     <li class="nav-item dropdown submenu active">
-                        <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown"
+                        <a href="index.html" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false">Beranda</a>
                         <i class="arrow_carrot-down_alt2 mobile_dropdown_icon" aria-hidden="true"
                            data-toggle="dropdown"></i>
                         
                     </li>
-                  
                     <li class="nav-item dropdown submenu">
+                        <a href="subjek.html" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">Daftar Subyek</a>
+                        <i class="arrow_carrot-down_alt2 mobile_dropdown_icon" aria-hidden="true"
+                           data-toggle="dropdown"></i>
+                        
+                    </li>
+                  
+                    <!--<li class="nav-item dropdown submenu">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Daftar Subjek
                         </a>
@@ -73,7 +80,7 @@
                             <li class="nav-item"><a href="signin.html" class="nav-link">Sub Menu 2</a></li>
                            
                         </ul>
-                    </li>
+                    </li>-->
                     <li class="nav-item dropdown submenu">
                         <a class="nav-link dropdown-toggle" href="forums.html" role="button" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false">
@@ -146,7 +153,7 @@
                     <div class="fanfact-icon">
                         <img src="img/home_support/fun-fact-1.png" alt="funfact">
                     </div>
-                    <div class="counter">842</div>
+                    <div class="counter" id="0xx"></div>
                     <h3 class="title">Kelas 0XX - Ilmu komputer, informasi dan karya umum</h3>
                 </div>
                 <!-- /.funfact-box -->
@@ -155,7 +162,7 @@
                     <div class="fanfact-icon">
                         <img src="img/home_support/fun-fact-2.png" alt="funfact">
                     </div>
-                    <div class="counter">10,23</div>
+                    <div class="counter" id="1xx" ></div>
                     <h3 class="title">Kelas 1XX - Filsafat dan Psikologi</h3>
                 </div>
                 <!-- /.funfact-box text-center -->
@@ -164,7 +171,7 @@
                     <div class="fanfact-icon">
                         <img src="img/home_support/fun-fact-3.png" alt="funfact">
                     </div>
-                    <div class="counter">196</div>
+                    <div class="counter" id="2xx"></div>
                     <h3 class="title">Kelas 2XX - Agama</h3>
                 </div>
                 <!-- /.funfact-box text-center -->
@@ -173,7 +180,7 @@
                     <div class="fanfact-icon">
                         <img src="img/home_support/fun-fact-4.png" alt="funfact">
                     </div>
-                    <div class="counter">650</div>
+                    <div class="counter" id="3xx"></div>
                     <h3 class="title">Kelas 3XX - Ilmu Pengetahuan Sosial</h3>
                 </div>
                 <!-- /.funfact-box text-center -->
@@ -182,7 +189,7 @@
                     <div class="fanfact-icon">
                         <img src="img/home_support/fun-fact-5.png" alt="funfact">
                     </div>
-                    <div class="counter">364</div>
+                    <div class="counter" id="4xx"></div>
                     <h3 class="title">Kelas 4XX - Bahasa</h3>
                 </div>
                 <!-- /.funfact-box text-center -->
@@ -194,7 +201,7 @@
                     <div class="fanfact-icon">
                         <img src="img/home_support/science.png" alt="funfact">
                     </div>
-                    <div class="counter">842</div>
+                    <div class="counter" id="5xx"></div>
                     <h3 class="title">Kelas 5XX - Sains</h3>
                 </div>
                 <!-- /.funfact-box -->
@@ -203,7 +210,7 @@
                     <div class="fanfact-icon">
                         <img src="img/home_support/technology.png" alt="funfact">
                     </div>
-                    <div class="counter">10,23</div>
+                    <div class="counter" id="6xx"></div>
                     <h3 class="title">Kelas 6XX - Teknologi</h3>
                 </div>
                 <!-- /.funfact-box text-center -->
@@ -212,7 +219,7 @@
                     <div class="fanfact-icon">
                         <img src="img/home_support/art.png" alt="funfact">
                     </div>
-                    <div class="counter">196</div>
+                    <div class="counter" id="7xx"></div>
                     <h3 class="title">Kelas 7XX - Kesenian</h3>
                 </div>
                 <!-- /.funfact-box text-center -->
@@ -221,7 +228,7 @@
                     <div class="fanfact-icon">
                         <img src="img/home_support/literature.png" alt="funfact">
                     </div>
-                    <div class="counter">650</div>
+                    <div class="counter" id="8xx"></div>
                     <h3 class="title">Kelas 8XX - Sastra</h3>
                 </div>
                 <!-- /.funfact-box text-center -->
@@ -230,7 +237,7 @@
                     <div class="fanfact-icon">
                         <img src="img/home_support/history.png" alt="funfact">
                     </div>
-                    <div class="counter">364</div>
+                    <div class="counter" id="9xx"></div>
                     <h3 class="title">Kelas 9XX - Geografi dan Sejarah</h3>
                 </div>
                 <!-- /.funfact-box text-center -->
@@ -599,6 +606,38 @@
 <script src="assets/counterup/jquery.counterup.min.js"></script>
 <script src="assets/counterup/jquery.waypoints.min.js"></script>
 <script src="js/main.js"></script>
+<script>
+    var base_url = "http://localhost:8000/"
+    function getClass(){
+        $.ajax({
+            url: base_url + "statistic/class",
+            method : 'GET',
+            dataType : 'json',
+            success : function(response){
+                $('#0xx').html(response["0xx"]).digits();
+                $('#1xx').html(response["1xx"]).digits();
+                $('#2xx').html(response["2xx"]).digits();
+                $('#3xx').html(response["3xx"]).digits();
+                $('#4xx').html(response["4xx"]).digits();
+                $('#5xx').html(response["5xx"]).digits();
+                $('#6xx').html(response["6xx"]).digits();
+                $('#7xx').html(response["7xx"]).digits();
+                $('#8xx').html(response["8xx"]).digits();
+                $('#9xx').html(response["9xx"]).digits();
+                //console.log(response);
+            },
+            error : function(){
+                alert("error!")
+            }
+        })
+    }
+    $.fn.digits = function(){ 
+        return this.each(function(){ 
+            $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
+        })
+    }
+    getClass();
+</script>
 </body>
 
 </html>
