@@ -112,7 +112,7 @@
                         </nav>
                     </div>
                     <div class="col-sm-5">
-                        <a href="#" class="date"><i class="icon_clock_alt"></i>Updated on 7 September 2023</a>
+                        <a href="#" class="date" id="countSearch"></a>
                     </div>
                 </div>
             </div>
@@ -403,6 +403,11 @@
     <script src="assets/wow/wow.min.js"></script>
     <script src="js/main.js"></script>
     <script>
+        $.fn.digits = function(){ 
+            return this.each(function(){ 
+                $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
+            })
+        }
         var getUrlParameter = function getUrlParameter(sParam) {
                 var sPageURL = window.location.search.substring(1),
                     sURLVariables = sPageURL.split('&'),
@@ -428,18 +433,14 @@
             var navigation = '<div class="nav-links" id="navigation">';
             if(current == 1) {
                 navigation += '<span aria-current="page" class="page-numbers current">'+current+'</span>';
+                navigation += '<span aria-current="page" class="page-numbers current">'+current+'</span>';
                 for(i = current+1; i< (current + 11); i++){
                     navigation += '<a class="page-numbers" href="#">'+i+'</a>';
                 }
                 navigation += '<a class="next page-numbers" href="#"><i class="arrow_carrot-right"></i></a>';
-                //Math.ceil(total / length);
             }
             $('#navigation').html(navigation);
-            /*<div class="nav-links" id="navigation">
-                                <span aria-current="page" class="page-numbers current">1</span>
-                                <a class="page-numbers" href="#">2</a>
-                                <a class="next page-numbers" href="#"><i class="arrow_carrot-right"></i></a>
-                            </div>*/
+
 
         }
         function createContent(){
@@ -447,8 +448,12 @@
                 sub_class = getUrlParameter('sub-class'),
                 page = getUrlParameter('page'),
                 length = getUrlParameter('length');
+                if(q !== "false"){
+                    $('#search').val(q);
+                }
             if(q == false){
                 q = null;
+               
             }
             if(sub_class == false){
                 sub_class = null;
@@ -486,6 +491,9 @@
                         html_element += '<div class="media-body author_text"><h4>'+value.creator+'</h4><div class="date">'+value.created_at+'</div></div></div></div></div></div>';
                         $('#content_list').append(html_element);
                     })
+                    
+                    $('#countSearch').html('<i class="icon_search"></i>' + "Menemukan <span id='tot_result'>"+ response.total_results + "</span> konten");
+                    $('#tot_result').digits();
                     createNavigation(response.page, response.total_results, response.length, response.query);
                     //$('#content_list').html(html_element);
                     
