@@ -61,6 +61,7 @@ body {
   color: #6b707f;
 }
 
+
 :focus {
   outline: none;
 }
@@ -2438,6 +2439,7 @@ ul.list-style li:last-child {
 }
 .tag_list li a i {
   margin-right: 15px;
+  color: #10b3d6;
 }
 .tag_list li a:hover {
   color: #10b3d6;
@@ -4748,6 +4750,7 @@ body:not(.onepage-doc) .body_fixed #font-switcher {
 }
 .chart-info li.color-three .counterup {
   color: #35bae9;
+  height: 50px;
 }
 .chart-info li.color-three .border-image:before {
   top: 55px;
@@ -4755,6 +4758,7 @@ body:not(.onepage-doc) .body_fixed #font-switcher {
 }
 .chart-info li.color-four .counterup {
   color: #fcc103;
+  height: 50px;
 }
 .chart-info li.color-four .border-image:before {
   top: 55px;
