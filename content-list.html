@@ -3,8 +3,11 @@
 
 <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
+    <meta http-equiv="Permissions-Policy" content="ch-ua">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -107,7 +110,8 @@
                           <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="index.html">Beranda</a></li>
                             <li class="breadcrumb-item"><a href="subjek.html">Daftar Subjek</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Subjek</li>
+                            <li class="breadcrumb-item active" aria-current="page" id="breadcrumb_subyek_class">Subjek</li>
+                            <li class="breadcrumb-item active" id="breadcrumb_subyek_sub_class" style="display:none"></li>
                           </ol>
                         </nav>
                     </div>
@@ -402,6 +406,8 @@
     <script src="js/jquery.wavify.js"></script>
     <script src="assets/wow/wow.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/jquery.csv.min.js"></script>
+
     <script>
         $.fn.digits = function(){ 
             return this.each(function(){ 
@@ -464,6 +470,25 @@
             });
             $('#txt_page_number').val(current);
         }
+        function getSubjectClassDesc(sub_class){
+            if(sub_class != null) {
+                $.ajax({
+                    url: base_url + "content/get-subclass-desc" +"/" +sub_class,
+                    method : 'GET',
+                    dataType : 'json',
+                    success : function(response){
+                        $('#breadcrumb_subyek_class').html(response[0]);
+                        $('#breadcrumb_subyek_sub_class').html(response[1]);
+                    },
+                    error : function(){
+                        alert("error!")
+                    }
+                });
+            } else {
+                $('#breadcrumb_subyek_class').html("Subyek");
+                $('#breadcrumb_subyek_sub_class').html();
+            }
+        }
         function createContent(){
             var q = getUrlParameter('q'),
                 sub_class = getUrlParameter('sub-class'),
@@ -477,7 +502,7 @@
             }
             if(sub_class == false){
                 sub_class = null;
-            }
+            } 
             if(page == false){
                 page = null;
             }
@@ -511,8 +536,19 @@
                         html_element += '<div class="media-body author_text"><h4>'+value.creator+'</h4><div class="date">'+value.created_at+'</div></div></div></div></div></div>';
                         $('#content_list').append(html_element);
                     })
-                    
+
                     $('#countSearch').html('<i class="icon_search"></i>' + "Menemukan <span id='tot_result'>"+ response.total_results + "</span> konten");
+                    if(sub_class != null){
+                        $('#breadcrumb_subyek_sub_class').html(sub_class);
+                        $('#breadcrumb_subyek_class').removeClass('active');
+                        $('#breadcrumb_subyek_sub_class').addClass('active');
+                        $('#breadcrumb_subyek_sub_class').css('display', 'block');
+                    } else {
+                        $('#breadcrumb_subyek_sub_class').css('display', 'none');
+                        $('#breadcrumb_subyek_sub_class').removeClass('active');
+                        $('#breadcrumb_subyek_class').addClass('active');
+                    }
+                    getSubjectClassDesc(sub_class);
                     $('#tot_result').digits();
                     createNavigation(parseInt(response.page), response.total_results, response.length, response.query);
                     
@@ -524,6 +560,11 @@
             })
         }
         createContent();
+        
+
+        //const someIframeEl = document.getElementById('some-iframe')
+    //const isCameraFeatureAllowed = someIframeEl.featurePolicy.allowsFeature('camera')
+        
     </script>
 </body>
 

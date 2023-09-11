@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="assets/animation/animate.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <title>PAPRIKA - Portal Repositori Konten Kreatif</title>
 </head>
 
@@ -119,9 +120,9 @@
             <div class="doc_banner_text_two text-center">
                 <h2>Butuh pencarian berbasis konten?</h2>
                 <p>Paprika (Portal Repositori Konten Kreatif) merupakan portal pencarian 1 pintu konten-konten kreasi.</p>
-                <form action="#" class="banner_search_form">
-                    <input type="search" class="form-control" placeholder="Isi Kata Kunci">
-                    <button type="submit" class="search_btn">Cari</button>
+                <form action="#" class="banner_search_form" id="form_search"> 
+                    <input type="search" class="form-control" placeholder='Masukkan Kata Kunci' id="search">
+                    <button type="submit" id="button_search"><i class="icon_search"></i></button>
                 </form>
             </div>
         </div>
@@ -630,6 +631,10 @@
             $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
         })
     }
+    $('#form_search').submit(function (evt) {
+            evt.preventDefault();
+            window.location.href = "content-list.html?q=" + $('#search').val(); 
+        });
     getClass();
 </script>
 </body>
