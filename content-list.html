@@ -448,19 +448,19 @@
             navigation += " <span class='next' style='margin-left: 40px;'>Go to page: </span><input type='number' id='txt_page_number' style='width:50px; border-radius: 4px; color: #10b3d6; border: 1px solid #a7e1ed;'/> </div> ";
             $('#txt_page_number').val(current);
             $('#navigation').html(navigation);
-            bindNavEvent(current);
+            bindNavEvent(current, query);
 
         }
-        function bindNavEvent(current) {
+        function bindNavEvent(current, query) {
+
             $('.page-numbers').on('click', function(){
-                window.location.href = "content-list.html?q=" + $('#search').val() + '&page=' + $(this).html(); 
+                window.location.href = "content-list.html?q="+ query + '&page=' + $(this).html(); 
             });
             $('#left-arrow').on('click', function(){
-                //var currentPage = parseInt($('#current').html());
-                window.location.href = "content-list.html?q=" + $('#search').val() + '&page=' + (current - 1); 
+                window.location.href = "content-list.html?q="+ query + '&page=' + (current - 1); 
             });
             $('#txt_page_number').on('change', function(){
-                window.location.href = "content-list.html?q=" + $('#search').val() + '&page=' + $(this).val(); 
+                window.location.href = "content-list.html?q=" + query + '&page=' + $(this).val(); 
             });
             $('#txt_page_number').val(current);
         }

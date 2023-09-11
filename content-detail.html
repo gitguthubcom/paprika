@@ -103,15 +103,15 @@
         <section class="breadcrumb_area_two">
             <div class="container">
                 <div class="breadcrumb_content">
-                    <h2>How to Connect Google Calendar With WordPress Contact Forms</h2>
+                    <h2 id="title"></h2>
                     <div class="single_post_author">
                         <img class="author_img" src="img/blog-single/author_single.png" alt="">
                         <div class="text">
-                            <a href="#"><h4>Jason Response</h4></a>
+                            <a href="#"><h4 id="author">Jason Response</h4></a>
                             <div class="post_tag">
-                                <a href="#">April 16, 2020</a>
+                                <a href="#" id="created_at">April 16, 2020</a>
                                 <!-- <a href="#">18 Min Read</a> -->
-                                <a class="c_blue" href="#">Artikel</a>
+                                <a class="c_blue" href="#" id="type">Artikel</a>
                             </div>
                         </div>
                     </div>
@@ -132,7 +132,7 @@
                                 </div> -->
                                 <a class="toggle_btn" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Detail</a>
                                 <div class="collapse multi-collapse show" id="multiCollapseExample1">
-                                    <div class="card card-body toggle_body"> A short rod of wood or plastic sewn to one side of a coat or other garment, pushed through a hole or loop on the other side and twisted so as to act as a fastener. </div>
+                                    <div class="card card-body toggle_body" id="description"> A short rod of wood or plastic sewn to one side of a coat or other garment, pushed through a hole or loop on the other side and twisted so as to act as a fastener. </div>
                                 </div>
                                 <a class="toggle_btn mt-1 collapsed" data-toggle="collapse" href="#multiCollapseExample2" role="button" aria-expanded="false" aria-controls="multiCollapseExample2">Deskripsi</a>
                                 <div class="collapse multi-collapse" id="multiCollapseExample2">
@@ -144,7 +144,7 @@
                                 <div class="collapse multi-collapse show" id="multiCollapseExample1">
                                     <div class="code-preview">
                                         <div class="embed-responsive embed-responsive-16by9">
-                                            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+                                            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen id="konten_embed"></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -429,6 +429,48 @@
     <script src="js/jquery.wavify.js"></script>
     <script src="assets/wow/wow.min.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        var base_url = "http://localhost:8000/"
+        $.fn.digits = function(){ 
+            return this.each(function(){ 
+                $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
+            })
+        }
+        var getUrlParameter = function getUrlParameter(sParam) {
+                var sPageURL = window.location.search.substring(1),
+                    sURLVariables = sPageURL.split('&'),
+                    sParameterName,
+                    i;
+
+                for (i = 0; i < sURLVariables.length; i++) {
+                    sParameterName = sURLVariables[i].split('=');
+
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                    }
+                }
+            return false;
+        };
+        function getDetail(){
+            var id = getUrlParameter('id')
+            $.ajax({
+                url: base_url + "content/detail/" + id ,
+                method : 'GET',
+                dataType : 'json',
+                success : function(response){
+                    $('#title').html(response.title);
+                    $('#author').html(response.creator[0]);
+                    $('#created_at').html(response.created_at);
+                    $('#description').html(response.description);
+                    $('#konten_embed').attr('src',response.link);
+                },
+                error : function(){
+                    alert("error!")
+                }
+            })
+        }
+        getDetail();
+    </script>
 </body>
 
 </html>
