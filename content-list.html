@@ -431,29 +431,49 @@
         var base_url = "http://localhost:8000/";
         function createNavigation(current, total, length, query){
             var navigation = '<div class="nav-links" id="navigation">';
-            if(current == 1) {
-                navigation += '<span aria-current="page" class="page-numbers current">'+current+'</span>';
-                navigation += '<span aria-current="page" class="page-numbers current">'+current+'</span>';
-                for(i = current+1; i< (current + 11); i++){
-                    navigation += '<a class="page-numbers" href="#">'+i+'</a>';
-                }
-                navigation += '<a class="next page-numbers" href="#"><i class="arrow_carrot-right"></i></a>';
+            if(current > 1) {
+                navigation += '<a id="left-arrow" class="next page-numbers" href="#"><i class="arrow_carrot-left"></i></a>';
             }
+            navigation += '<span aria-current="page" class="page-numbers current" id="current">'+current+'</span>';
+            var max_page = Math.ceil(total/length), max_iter = current + 11;
+
+            for(i = current+1; i< max_iter; i++){
+                if(i < max_page + 1) {
+                    navigation += '<a class="page-numbers" href="#">'+i+'</a>';
+                } else {
+                    break;
+                }
+            }
+            navigation += '<a class="next page-numbers" href="#"><i class="arrow_carrot-right"></i></a>';
+            navigation += " <span class='next' style='margin-left: 40px;'>Go to page: </span><input type='number' id='txt_page_number' style='width:50px; border-radius: 4px; color: #10b3d6; border: 1px solid #a7e1ed;'/> </div> ";
+            $('#txt_page_number').val(current);
             $('#navigation').html(navigation);
+            bindNavEvent(current);
 
-
+        }
+        function bindNavEvent(current) {
+            $('.page-numbers').on('click', function(){
+                window.location.href = "content-list.html?q=" + $('#search').val() + '&page=' + $(this).html(); 
+            });
+            $('#left-arrow').on('click', function(){
+                //var currentPage = parseInt($('#current').html());
+                window.location.href = "content-list.html?q=" + $('#search').val() + '&page=' + (current - 1); 
+            });
+            $('#txt_page_number').on('change', function(){
+                window.location.href = "content-list.html?q=" + $('#search').val() + '&page=' + $(this).val(); 
+            });
+            $('#txt_page_number').val(current);
         }
         function createContent(){
             var q = getUrlParameter('q'),
                 sub_class = getUrlParameter('sub-class'),
                 page = getUrlParameter('page'),
                 length = getUrlParameter('length');
-                if(q !== "false"){
-                    $('#search').val(q);
-                }
+                
             if(q == false){
                 q = null;
-               
+            } else {
+                $('#search').val(q);
             }
             if(sub_class == false){
                 sub_class = null;
@@ -494,8 +514,8 @@
                     
                     $('#countSearch').html('<i class="icon_search"></i>' + "Menemukan <span id='tot_result'>"+ response.total_results + "</span> konten");
                     $('#tot_result').digits();
-                    createNavigation(response.page, response.total_results, response.length, response.query);
-                    //$('#content_list').html(html_element);
+                    createNavigation(parseInt(response.page), response.total_results, response.length, response.query);
+                    
                     
                 },
                 error : function(){
@@ -504,7 +524,6 @@
             })
         }
         createContent();
-        //createNavigation();
     </script>
 </body>
 
