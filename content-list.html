@@ -458,15 +458,14 @@
 
         }
         function bindNavEvent(current, query) {
-
             $('.page-numbers').on('click', function(){
-                window.location.href = "content-list.html?q="+ query + '&page=' + $(this).html(); 
+                window.location.href = "content-list.html?page=" + $(this).html() + "&q="+ query; 
             });
             $('#left-arrow').on('click', function(){
-                window.location.href = "content-list.html?q="+ query + '&page=' + (current - 1); 
+                window.location.href = "content-list.html?page=" + $(this).html() + "&q="+ query; 
             });
             $('#txt_page_number').on('change', function(){
-                window.location.href = "content-list.html?q=" + query + '&page=' + $(this).val(); 
+                window.location.href = "content-list.html?page=" + $(this).html() + "&q="+ query; 
             });
             $('#txt_page_number').val(current);
         }
