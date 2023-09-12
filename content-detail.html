@@ -429,8 +429,9 @@
             })
         }
         function contentRelated(data){
+            var page = getRandomInt(10);
             $.ajax({
-                url: base_url + "content/search?q="+ data.title.split(' ').slice(2, 3).join('+') + "&sub-class=" + data.subject_sub_class + '&page=1&length=3&id=' + data.id ,
+                url: base_url + "content/search?sub-class=" + data.subject_sub_class + '&page='+ page+'&length=3&id=' + data.id ,
                 method : 'GET',
                 dataType : 'json',
                 async : false,
@@ -462,6 +463,10 @@
                 }
             })
         }
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
         getDetail();
     </script>
 </body>
