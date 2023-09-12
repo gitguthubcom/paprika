@@ -465,7 +465,7 @@
                 window.location.href = "content-list.html?page=" + $(this).html() + "&q="+ query; 
             });
             $('#txt_page_number').on('change', function(){
-                window.location.href = "content-list.html?page=" + $(this).html() + "&q="+ query; 
+                window.location.href = "content-list.html?page=" + $(this).val() + "&q="+ query; 
             });
             $('#txt_page_number').val(current);
         }
