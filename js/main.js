@@ -423,6 +423,7 @@
 				success : function(response){
 					$('#breadcrumb_subyek_class').html(response[0]);
 					$('#breadcrumb_subyek_sub_class').html(response[1]);
+					$('head').append( '<meta name="keywords" content="'+response[0]+', '+response[1]+'">' );
 				},
 				error : function(){
 					alert("error!")
@@ -432,6 +433,7 @@
 			$('#breadcrumb_subyek_class').html("Subyek");
 			$('#breadcrumb_subyek_sub_class').html();
 		}
+		
 	}
 	function createContent(){
 		var q = getUrlParameter('q'),
@@ -529,6 +531,17 @@
 				$('#description').html(response.description);
 				$('#konten_embed').attr('src',response.link);
 				$('#type').html(response.type);
+				$('head title').text(response.title);
+				$('meta[name=description]').remove();
+				$('head').append( '<meta name="title" content="'+response.title+'">' );
+				$('head').append( '<meta name="description" content="'+response.description+'">' );
+				$('head').append( '<meta name="author" content="'+response.description+'">' );
+				$('head').append( '<meta name="date.created" content="'+response.created_at+'">' );
+				$('head').append( '<meta property="og:site_name" content="Portal Repositori Konten Kreatif">' );
+				$('head').append( '<meta property="og:site_name" content="Portal Repositori Konten Kreatif">' );
+				$('head').append( '<meta name="og:type" content="'+response.type+'">' );
+				$('head').append( '<meta name="og:url" content="'+ base_url + "content/detail/" + id+'">' );
+
 				contentRelated(response);
 			},
 			error : function(){
