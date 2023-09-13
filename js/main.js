@@ -837,7 +837,7 @@
         })
     }
 	var loc_now = window.location.href.toString();
-	if(loc_now.includes('index.html')){
+	if(loc_now.includes('index.html') || loc_now.replace("https://", "") == "paprika.perpusnas.go.id" || loc_now.replace("http://","") == "paprika.perpusnas.go.id"){
 		getClass();
 	}
 	if(loc_now.includes('content-list.html')){
