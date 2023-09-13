@@ -388,7 +388,8 @@
                         </div>
                         <!-- /.post-header -->
 
-                        <div class="community-posts-wrapper bb-radius">
+                        <div class="community-posts-wrapper bb-radius" id="list_content">
+                            <!--
                             <div class="community-post style-two kbDoc richard bug">
                                 <div class="post-content">
                                     <div class="author-avatar">
@@ -404,14 +405,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <!-- <div class="post-meta-wrapper">
-                                    <ul class="post-meta-info">
-                                        <li><a href="#"><i class="icon_chat_alt"></i>20</a></li>
-                                        <li><a href="#"><i class="icon_star"></i>5</a></li>
-                                    </ul>
-                                </div> -->
                             </div>
-                            <!-- /.community-post -->
 
                             <div class="community-post style-two improvement kbDoc open druid">
                                 <div class="post-content">
@@ -420,26 +414,13 @@
                                     </div>
                                     <div class="entry-content">
                                         <h3 class="post-title"><a href="forum-single.html">Course do not display properly</a> </h3>
-                                        <!-- <div class="cat-wrap">
-                                            <a class="badge" href="#">Docbuzz</a>
-                                        </div> -->
-                                        <!-- <span class="com-featured">
-                                            <i class="icon_check"></i>
-                                        </span> -->
                                         <ul class="meta">
                                             <li><img src="img/home_support/cmm2.png" alt="cmm"><a href="#">Video</a></li>
                                             <li><i class="icon_calendar"></i>updated 5 days ago</li>
                                         </ul>
                                     </div>
                                 </div>
-                                <!-- <div class="post-meta-wrapper">
-                                    <ul class="post-meta-info">
-                                        <li><a href="#"><i class="icon_chat_alt"></i>20</a></li>
-                                        <li><a href="#"><i class="icon_star"></i>5</a></li>
-                                    </ul>
-                                </div> -->
                             </div>
-                            <!-- /.community-post style-two -->
 
                             <div class="community-post style-two css feature improvement weir">
                                 <div class="post-content">
@@ -455,14 +436,8 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <!-- <div class="post-meta-wrapper">
-                                    <ul class="post-meta-info">
-                                        <li><a href="#"><i class="icon_chat_alt"></i>20</a></li>
-                                        <li><a href="#"><i class="icon_star"></i>5</a></li>
-                                    </ul>
-                                </div> -->
                             </div>
-                            <!-- /.community-post style-two -->
+
 
 
                             <div class="community-post style-two feature kbDoc spider richard">
@@ -476,25 +451,13 @@
                                                 Sticky navbar is shown, but state is inactive
                                             </a>
                                         </h3>
-                                        <!-- <div class="cat-wrap">
-                                            <a class="badge color-yellow" href="#">Improvement !</a>
-                                            <a class="badge color-ass" href="#">CSS</a>
-                                        </div> -->
                                         <ul class="meta">
                                             <li><img src="img/home_support/cmm2.png" alt="cmm"><a href="#">Video</a></li>
                                             <li><i class="icon_calendar"></i>updated 4 days ago</li>
                                         </ul>
                                     </div>
                                 </div>
-                                <!-- <div class="post-meta-wrapper">
-                                    <ul class="post-meta-info">
-                                        <li><a href="#"><i class="icon_chat_alt"></i>20</a></li>
-                                        <li><a href="#"><i class="icon_star"></i>5</a></li>
-                                    </ul>
-                                </div> -->
                             </div>
-                            <!-- /.community-post style-two -->
-
 
                             <div class="community-post style-two spider open weir">
                                 <div class="post-content">
@@ -513,19 +476,9 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <!-- <div class="post-meta-wrapper">
-                                    <ul class="post-meta-info">
-                                        <li><a href="#"><i class="icon_chat_alt"></i>20</a></li>
-                                        <li><a href="#"><i class="icon_star"></i>5</a></li>
-                                    </ul>
-                                </div> -->
                             </div>
-                            <!-- /.community-post style-two -->
-
-
-
+                        -->
                         </div>
-                        <!-- /.community-posts-wrapper -->
 
                         <div class="pagination-wrapper">
                             <div class="view-post-of">
@@ -768,10 +721,38 @@
                 }
             })
         }
-        function getKonten(){
-            
+        function getContent(){
+            var creator = getUrlParameter('q');
+            $.ajax({
+                url: base_url + "user/content?q=" + creator ,
+                method : 'GET',
+                dataType : 'json',
+                //async : false,
+                success : function(response){                        
+                    $.each(response.results, function(index, value){
+                        var html_element = "";
+                        html_element += '<div class="community-post style-two kbDoc richard bug"><div class="post-content"><div class="author-avatar">';
+                        html_element += '<img src="img/home_support/rc15.png" alt="'+ value.creator +'"></div>';
+                        html_element += '<div class="entry-content"><h3 class="post-title"><a href="detail.html?'+value.id+'">'+value.title+'</a></h3>';
+                        html_element += '<ul class="meta">';
+
+                        if(value.link.includes("youtube")){
+                            html_element += '<li><img src="img/home_support/cmm2.png" alt="cmm"><a href="'+value.link+'">Video</a></li><li><i class="icon_calendar"></i>updated 3 days ago</li></ul>';  
+                        } else {
+                            html_element += '<li><img src="img/home_support/cmm1.png" alt="cmm"><a href="'+value.link+'">Artikel</a></li><li><i class="icon_calendar"></i>updated 3 days ago</li></ul>';  
+                        }
+                        html_element += '</div></div></div>';
+                        $('#list_content').append(html_element);
+                    })              
+                },
+                error : function(){
+                    alert("error!")
+                }
+            })
         }
         getDetail();
+        getContent();
+
     </script>
 </body>
 
