@@ -537,7 +537,7 @@
 				$('head').append( '<meta name="description" content="'+response.description+'">' );
 				$('head').append( '<meta name="author" content="'+response.description+'">' );
 				$('head').append( '<meta name="date.created" content="'+response.created_at+'">' );
-				$('head').append( '<meta property="og:site_name" content="Portal Repositori Konten Kreatif">' );
+				$('head').append( '<meta property="og:title" content="'+response.title+'">' );
 				$('head').append( '<meta property="og:site_name" content="Portal Repositori Konten Kreatif">' );
 				$('head').append( '<meta name="og:type" content="'+response.type+'">' );
 				$('head').append( '<meta name="og:url" content="'+ base_url + "content/detail/" + id+'">' );
