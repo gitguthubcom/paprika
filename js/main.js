@@ -294,7 +294,376 @@
 	}
 
 	select();
+	function getClass(){
+        $.ajax({
+            url: base_url + "statistic/class",
+            method : 'GET',
+            dataType : 'json',
+            success : function(response){
+                $('#0xx').html(response["0xx"]).digits();
+                $('#1xx').html(response["1xx"]).digits();
+                $('#2xx').html(response["2xx"]).digits();
+                $('#3xx').html(response["3xx"]).digits();
+                $('#4xx').html(response["4xx"]).digits();
+                $('#5xx').html(response["5xx"]).digits();
+                $('#6xx').html(response["6xx"]).digits();
+                $('#7xx').html(response["7xx"]).digits();
+                $('#8xx').html(response["8xx"]).digits();
+                $('#9xx').html(response["9xx"]).digits();
+                //console.log(response);
+            },
+            error : function(){
+                alert("error!")
+            }
+        })
+    }
+	var loc_now = window.location.href.toString().replace("https://", "").replace("http://", "");
+	if(loc_now.includes('index.html') || loc_now.replace("/","") == "paprika.perpusnas.go.id" || loc_now.replace("/","") == "paprika.perpusnas.go.id"){
+		getClass();
+	}
+	if(loc_now.includes('content-list.html')){
+		createContent();
+	}	
+	if(loc_now.includes('content-detail.html')){
+		getDetail();
+	}
+	if(loc_now.includes('creator.html')){
+		getDetailCreator();
+		getCreatorContent();
+	}
+	if(loc_now.includes('subjek.html')){
+		getClassSubject();
+	}
+	
+	$.fn.digits = function(){ 
+        return this.each(function(){ 
+            $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
+        })
+    }
+    $('.funfact-box').on('click', function(){
+        var subyek_class = $(this).attr("data");
+        window.location.href = "content-list.html?class=" + subyek_class;
+    })
+    $('#form_search').submit(function (evt) {
+            evt.preventDefault();
+            let params = window.location.search.substring(1);
+            window.location.href = removeDuplicateparam("content-list.html?" +params +"&q=" + $('#search').val()); 
+    })
+	function getUrlParameter(sParam) {
+		var sPageURL = window.location.search.substring(1),
+			sURLVariables = sPageURL.split('&'),
+			sParameterName,
+			i;
 
+		for (i = 0; i < sURLVariables.length; i++) {
+			sParameterName = sURLVariables[i].split('=');
+
+			if (sParameterName[0] === sParam) {
+				return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+			}
+		}
+		return false;
+	}
+    function removeDuplicateparam(url_old){
+        let url = url_old
+        let [path, params] = url.split("?");
+        let result = path + '?' + new URLSearchParams(Object.fromEntries(new URLSearchParams(params))).toString()
+        return result
+    }
+	function createNavigation(current, total, length, query){
+		var navigation = '<div class="nav-links" id="navigation">';
+		if(current > 1) {
+			navigation += '<a id="left-arrow" class="next page-numbers" href="#"><i class="arrow_carrot-left"></i></a>';
+		}
+		navigation += '<span aria-current="page" class="page-numbers current" id="current">'+current+'</span>';
+		var max_page = Math.ceil(total/length), max_iter = current + 11;
+
+		for(i = current+1; i< max_iter; i++){
+			if(i < max_page + 1) {
+				navigation += '<a class="page-numbers" href="#">'+i+'</a>';
+			} else {
+				break;
+			}
+		}
+		navigation += '<a class="next page-numbers" href="#"><i class="arrow_carrot-right"></i></a>';
+		navigation += " <span class='next' style='margin-left: 40px;'>Go to page: </span><input type='number' id='txt_page_number' style='width:50px; border-radius: 4px; color: #10b3d6; border: 1px solid #a7e1ed;'/> </div> ";
+		$('#txt_page_number').val(current);
+		$('#navigation').html(navigation);
+		bindNavEvent(current, query);
+
+	}
+	function bindNavEvent(current, query) {
+	   
+		$('.page-numbers').on('click', function(){
+			window.location.href = removeDuplicateparam("content-list.html?q="+ query + "&page=" + $(this).html()); 
+		});
+		$('#left-arrow').on('click', function(){
+			window.location.href = removeDuplicateparam("content-list.html?q="+ query + "&page=" + $(this).html()); 
+		});
+		$('#txt_page_number').on('change', function(){
+			window.location.href = removeDuplicateparam("content-list.html?q="+ query + "&page=" + $(this).val()); 
+		});
+		$('#txt_page_number').val(current);
+	}
+	function removeDuplicateparam(url_old){
+		let url = url_old
+		let [path, params] = url.split("?");
+		let result = path + '?' + new URLSearchParams(Object.fromEntries(new URLSearchParams(params))).toString()
+		return result
+	}
+	function getSubjectClassDesc(sub_class){
+		if(sub_class != null) {
+			if(sub_class.toString().length == 2) {
+				sub_class = "0" + sub_class;
+			}
+			$.ajax({
+				url: base_url + "content/get-subclass-desc" +"/" +sub_class,
+				method : 'GET',
+				dataType : 'json',
+				success : function(response){
+					$('#breadcrumb_subyek_class').html(response[0]);
+					$('#breadcrumb_subyek_sub_class').html(response[1]);
+				},
+				error : function(){
+					alert("error!")
+				}
+			});
+		} else {
+			$('#breadcrumb_subyek_class').html("Subyek");
+			$('#breadcrumb_subyek_sub_class').html();
+		}
+	}
+	function createContent(){
+		var q = getUrlParameter('q'),
+			sub_class = getUrlParameter('sub-class'),
+			class_ = getUrlParameter('class'),
+			page = getUrlParameter('page'),
+			length = getUrlParameter('length');
+			
+		if(q == false){
+			q = null;
+		} else {
+			$('#search').val(q);
+		}
+		if(sub_class == false){
+			sub_class = null;
+		} 
+		if(class_ == false){
+			class_ = null;
+		} 
+		if(page == false){
+			page = null;
+		}
+		if(length == false){
+			length = "9";
+		}
+		$.ajax({
+			url: base_url + "content/search?q="+ q + "&class="+class_+"&sub-class=" + sub_class + '&page=' + page + '&length=' + length ,
+			method : 'GET',
+			dataType : 'json',
+			success : function(response){
+				
+				$.each(response.results, function(index, value){
+					var html_element = "";
+					html_element += '<div class="col-lg-4 col-sm-6">';
+					html_element += '<div class="blog_grid_post wow fadeInUp" data-wow-delay="0.2s">';
+					if(value.link.includes("youtube")){
+						html_element += '<iframe width="100%" height="220" src="'+value.link+'"></iframe> ';  
+					} else {
+						html_element += '<img src="img/blog-grid/blog_grid_post2.jpg" alt="">';
+					}
+					html_element += '<div class="grid_post_content">';
+					if(value.type == 'video') {
+						html_element += '<div class="post_tag"><a class="cat-KbDoc orange" href="#">'+value.type+'</a></div>';
+					} else {
+						html_element += '<div class="post_tag"><a class="cat orange" href="#">'+value.type+'</a></div>';
+					}
+					html_element += '<a href="content-detail.html?id='+value.id+'"><h4 class="b_title">'+value.title+'</h4></a>';
+					html_element += '<p>'+ value.description.substring(0, 250)+'</p>';
+					html_element += '<div class="media post_author"><div class="round_img"><img src="img/blog-grid/author_2.jpg" alt=""></div>';
+					html_element += '<div class="media-body author_text"><a href="creator.html?q='+value.creator+'"><h4>'+value.creator+'</h4></a><div class="date">'+value.created_at+'</div></div></div></div></div></div>';
+					$('#content_list').append(html_element);
+				})
+
+				$('#countSearch').html('<i class="icon_search"></i>' + "Menemukan <span id='tot_result'>"+ response.total_results + "</span> konten");
+				if(sub_class != null){
+					$('#breadcrumb_subyek_sub_class').html(sub_class);
+					$('#breadcrumb_subyek_class').removeClass('active');
+					$('#breadcrumb_subyek_sub_class').addClass('active');
+					$('#breadcrumb_subyek_sub_class').css('display', 'block');
+					getSubjectClassDesc(sub_class);
+				} else {
+					$('#breadcrumb_subyek_sub_class').css('display', 'none');
+					$('#breadcrumb_subyek_sub_class').removeClass('active');
+					$('#breadcrumb_subyek_class').addClass('active');
+				}
+				if(class_ != null){
+					$('#breadcrumb_subyek_class').removeClass('active');
+					getSubjectClassDesc(class_);
+
+				} else {
+					$('#breadcrumb_subyek_class').addClass('active');
+				}
+				
+				$('#tot_result').digits();
+				createNavigation(parseInt(response.page), response.total_results, response.length, response.query);
+				
+				
+			},
+			error : function(){
+				alert("error!")
+			}
+		})
+	}
+	function getDetail(){
+		var id = getUrlParameter('id')
+		$.ajax({
+			url: base_url + "content/detail/" + id ,
+			method : 'GET',
+			dataType : 'json',
+			//async : false,
+			success : function(response){
+				$('#title').html(response.title);
+				$('#author').html(response.creator[0]);
+				$('#created_at').html(response.created_at.substring(0, 10));
+				$('#description').html(response.description);
+				$('#konten_embed').attr('src',response.link);
+				$('#type').html(response.type);
+				contentRelated(response);
+			},
+			error : function(){
+				alert("error!")
+			}
+		})
+	}
+	function contentRelated(data){
+		var page = getRandomInt(10);
+		getSubjectClassDesc(data.subject_sub_class);
+		$.ajax({
+			url: base_url + "content/search?sub-class=" + data.subject_sub_class + '&page='+ page+'&length=3&id=' + data.id + '&class=' + data.subject_class,
+			method : 'GET',
+			dataType : 'json',
+			async : false,
+			success : function(response){                        
+				$.each(response.results, function(index, value){
+					var html_element = "";
+					html_element += '<div class="col-lg-4 col-sm-6">';
+					html_element += '<div class="blog_grid_post wow fadeInUp" data-wow-delay="0.2s">';
+					if(value.link.includes("youtube")){
+						html_element += '<iframe width="100%" height="220" src="'+value.link+'"></iframe> ';  
+					} else {
+						html_element += '<img src="img/blog-grid/blog_grid_post2.jpg" alt="">';
+					}
+					html_element += '<div class="grid_post_content">';
+					if(value.type == 'video') {
+						html_element += '<div class="post_tag"><a class="cat-KbDoc orange" href="#">'+value.type+'</a></div>';
+					} else {
+						html_element += '<div class="post_tag"><a class="cat orange" href="#">'+value.type+'</a></div>';
+					}
+					html_element += '<a href="content-detail.html?id='+value.id+'"><h4 class="b_title">'+value.title+'</h4></a>';
+					html_element += '<p>'+ value.description.substring(0, 250)+'</p>';
+					html_element += '<div class="media post_author"><div class="round_img"><img src="img/blog-grid/author_2.jpg" alt=""></div>';
+					html_element += '<div class="media-body author_text"><a href="creator.html?q='+value.creator+'"><h4>'+value.creator+'</h4></a><div class="date">'+value.created_at+'</div></div></div></div></div></div>';
+					$('#content_related').append(html_element);
+				})              
+			},
+			error : function(){
+				alert("error!")
+			}
+		})
+	}
+	function getRandomInt(max) {
+		return Math.floor(Math.random() * max);
+	}
+	function getSubjectClassDesc(sub_class){
+		if(sub_class != null) {
+			if(sub_class.toString().length == 2) {
+				sub_class = "0" + sub_class;
+			}
+			$.ajax({
+				url: base_url + "content/get-subclass-desc" +"/" +sub_class,
+				method : 'GET',
+				dataType : 'json',
+				success : function(response){
+					$('#breadcrumb_subyek_class').html(response[0]);
+					$('#breadcrumb_subyek_sub_class').html(response[1]);
+				},
+				error : function(){
+					alert("error!")
+				}
+			});
+		} else {
+			$('#breadcrumb_subyek_class').html("Subyek");
+			$('#breadcrumb_subyek_sub_class').html();
+		}
+	}
+	function getDetailCreator(){
+		var creator = getUrlParameter('q');
+		$('#creator_name').html(creator);
+		$.ajax({
+			url: base_url + "user/detail?q=" + creator ,
+			method : 'GET',
+			dataType : 'json',
+			success : function(response){
+				$('#total_konten').html(response.total_konten + " konten");
+				$('#total_konten2').html(response.total_konten + " konten");
+				$('#total_video').html(response.video + " konten");
+				$('#total_artikel').html(response.artikel + " konten");      
+				
+			},
+			error : function(){
+				alert("error!")
+			}
+		})
+	}
+	function getCreatorContent(){
+		var creator = getUrlParameter('q');
+		$.ajax({
+			url: base_url + "user/content?q=" + creator ,
+			method : 'GET',
+			dataType : 'json',
+			//async : false,
+			success : function(response){                        
+				$.each(response.results, function(index, value){
+					var html_element = "";
+					html_element += '<div class="community-post style-two kbDoc richard bug"><div class="post-content"><div class="author-avatar">';
+					html_element += '<img src="img/home_support/rc15.png" alt="'+ value.creator +'"></div>';
+					html_element += '<div class="entry-content"><h3 class="post-title"><a href="content-detail.html?id='+value.id+'">'+value.title+'</a></h3>';
+					html_element += '<ul class="meta">';
+
+					if(value.link.includes("youtube")){
+						html_element += '<li><img src="img/home_support/cmm2.png" alt="cmm"><a href="'+value.link+'">Video</a></li><li><i class="icon_calendar"></i>updated 3 days ago</li></ul>';  
+					} else {
+						html_element += '<li><img src="img/home_support/cmm1.png" alt="cmm"><a href="'+value.link+'">Artikel</a></li><li><i class="icon_calendar"></i>updated 3 days ago</li></ul>';  
+					}
+					html_element += '</div></div></div>';
+					$('#list_content').append(html_element);
+				})              
+			},
+			error : function(){
+				alert("error!")
+			}
+		})
+	}
+	function getClassSubject(){
+		$.ajax({
+			url: base_url + "statistic/sub-class-all",
+			method : 'GET',
+			dataType : 'json',
+			success : function(response){
+				$.each(response, function(index, value){
+					$('#' + index).html(" (" + value + ")").digits();
+					$('#' + index).parent().click(function() {
+						window.location.href = "content-list.html?sub-class=" + index; 
+					})
+				})
+
+			},
+			error : function(){
+				alert("error!")
+			}
+		})
+	}
 	/*--------------- counterUp js--------*/
 	function counterUp() {
 		if ($('.counter').length) {
@@ -813,375 +1182,6 @@
 			$('.ios').hide();
 		}
 	})
-	function getClass(){
-        $.ajax({
-            url: base_url + "statistic/class",
-            method : 'GET',
-            dataType : 'json',
-            success : function(response){
-                $('#0xx').html(response["0xx"]).digits();
-                $('#1xx').html(response["1xx"]).digits();
-                $('#2xx').html(response["2xx"]).digits();
-                $('#3xx').html(response["3xx"]).digits();
-                $('#4xx').html(response["4xx"]).digits();
-                $('#5xx').html(response["5xx"]).digits();
-                $('#6xx').html(response["6xx"]).digits();
-                $('#7xx').html(response["7xx"]).digits();
-                $('#8xx').html(response["8xx"]).digits();
-                $('#9xx').html(response["9xx"]).digits();
-                //console.log(response);
-            },
-            error : function(){
-                alert("error!")
-            }
-        })
-    }
-	var loc_now = window.location.href.toString();
-	if(loc_now.includes('index.html') || loc_now.replace("https://", "").replace("/","") == "paprika.perpusnas.go.id" || loc_now.replace("http://","").replace("/","") == "paprika.perpusnas.go.id"){
-		getClass();
-	}
-	if(loc_now.includes('content-list.html')){
-		createContent();
-	}	
-	if(loc_now.includes('content-detail.html')){
-		getDetail();
-	}
-	if(loc_now.includes('creator.html')){
-		getDetailCreator();
-		getCreatorContent();
-	}
-	if(loc_now.includes('subjek.html')){
-		getClassSubject();
-	}
-	
-	$.fn.digits = function(){ 
-        return this.each(function(){ 
-            $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
-        })
-    }
-    $('.funfact-box').on('click', function(){
-        var subyek_class = $(this).attr("data");
-        window.location.href = "content-list.html?class=" + subyek_class;
-    })
-    $('#form_search').submit(function (evt) {
-            evt.preventDefault();
-            let params = window.location.search.substring(1);
-            window.location.href = removeDuplicateparam("content-list.html?" +params +"&q=" + $('#search').val()); 
-    })
-	function getUrlParameter(sParam) {
-		var sPageURL = window.location.search.substring(1),
-			sURLVariables = sPageURL.split('&'),
-			sParameterName,
-			i;
 
-		for (i = 0; i < sURLVariables.length; i++) {
-			sParameterName = sURLVariables[i].split('=');
-
-			if (sParameterName[0] === sParam) {
-				return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
-			}
-		}
-		return false;
-	}
-    function removeDuplicateparam(url_old){
-        let url = url_old
-        let [path, params] = url.split("?");
-        let result = path + '?' + new URLSearchParams(Object.fromEntries(new URLSearchParams(params))).toString()
-        return result
-    }
-	function createNavigation(current, total, length, query){
-		var navigation = '<div class="nav-links" id="navigation">';
-		if(current > 1) {
-			navigation += '<a id="left-arrow" class="next page-numbers" href="#"><i class="arrow_carrot-left"></i></a>';
-		}
-		navigation += '<span aria-current="page" class="page-numbers current" id="current">'+current+'</span>';
-		var max_page = Math.ceil(total/length), max_iter = current + 11;
-
-		for(i = current+1; i< max_iter; i++){
-			if(i < max_page + 1) {
-				navigation += '<a class="page-numbers" href="#">'+i+'</a>';
-			} else {
-				break;
-			}
-		}
-		navigation += '<a class="next page-numbers" href="#"><i class="arrow_carrot-right"></i></a>';
-		navigation += " <span class='next' style='margin-left: 40px;'>Go to page: </span><input type='number' id='txt_page_number' style='width:50px; border-radius: 4px; color: #10b3d6; border: 1px solid #a7e1ed;'/> </div> ";
-		$('#txt_page_number').val(current);
-		$('#navigation').html(navigation);
-		bindNavEvent(current, query);
-
-	}
-	function bindNavEvent(current, query) {
-	   
-		$('.page-numbers').on('click', function(){
-			window.location.href = removeDuplicateparam("content-list.html?q="+ query + "&page=" + $(this).html()); 
-		});
-		$('#left-arrow').on('click', function(){
-			window.location.href = removeDuplicateparam("content-list.html?q="+ query + "&page=" + $(this).html()); 
-		});
-		$('#txt_page_number').on('change', function(){
-			window.location.href = removeDuplicateparam("content-list.html?q="+ query + "&page=" + $(this).val()); 
-		});
-		$('#txt_page_number').val(current);
-	}
-	function removeDuplicateparam(url_old){
-		let url = url_old
-		let [path, params] = url.split("?");
-		let result = path + '?' + new URLSearchParams(Object.fromEntries(new URLSearchParams(params))).toString()
-		return result
-	}
-	function getSubjectClassDesc(sub_class){
-		if(sub_class != null) {
-			if(sub_class.toString().length == 2) {
-				sub_class = "0" + sub_class;
-			}
-			$.ajax({
-				url: base_url + "content/get-subclass-desc" +"/" +sub_class,
-				method : 'GET',
-				dataType : 'json',
-				success : function(response){
-					$('#breadcrumb_subyek_class').html(response[0]);
-					$('#breadcrumb_subyek_sub_class').html(response[1]);
-				},
-				error : function(){
-					alert("error!")
-				}
-			});
-		} else {
-			$('#breadcrumb_subyek_class').html("Subyek");
-			$('#breadcrumb_subyek_sub_class').html();
-		}
-	}
-	function createContent(){
-		var q = getUrlParameter('q'),
-			sub_class = getUrlParameter('sub-class'),
-			class_ = getUrlParameter('class'),
-			page = getUrlParameter('page'),
-			length = getUrlParameter('length');
-			
-		if(q == false){
-			q = null;
-		} else {
-			$('#search').val(q);
-		}
-		if(sub_class == false){
-			sub_class = null;
-		} 
-		if(class_ == false){
-			class_ = null;
-		} 
-		if(page == false){
-			page = null;
-		}
-		if(length == false){
-			length = "9";
-		}
-		$.ajax({
-			url: base_url + "content/search?q="+ q + "&class="+class_+"&sub-class=" + sub_class + '&page=' + page + '&length=' + length ,
-			method : 'GET',
-			dataType : 'json',
-			success : function(response){
-				
-				$.each(response.results, function(index, value){
-					var html_element = "";
-					html_element += '<div class="col-lg-4 col-sm-6">';
-					html_element += '<div class="blog_grid_post wow fadeInUp" data-wow-delay="0.2s">';
-					if(value.link.includes("youtube")){
-						html_element += '<iframe width="100%" height="220" src="'+value.link+'"></iframe> ';  
-					} else {
-						html_element += '<img src="img/blog-grid/blog_grid_post2.jpg" alt="">';
-					}
-					html_element += '<div class="grid_post_content">';
-					if(value.type == 'video') {
-						html_element += '<div class="post_tag"><a class="cat-KbDoc orange" href="#">'+value.type+'</a></div>';
-					} else {
-						html_element += '<div class="post_tag"><a class="cat orange" href="#">'+value.type+'</a></div>';
-					}
-					html_element += '<a href="content-detail.html?id='+value.id+'"><h4 class="b_title">'+value.title+'</h4></a>';
-					html_element += '<p>'+ value.description.substring(0, 250)+'</p>';
-					html_element += '<div class="media post_author"><div class="round_img"><img src="img/blog-grid/author_2.jpg" alt=""></div>';
-					html_element += '<div class="media-body author_text"><a href="creator.html?q='+value.creator+'"><h4>'+value.creator+'</h4></a><div class="date">'+value.created_at+'</div></div></div></div></div></div>';
-					$('#content_list').append(html_element);
-				})
-
-				$('#countSearch').html('<i class="icon_search"></i>' + "Menemukan <span id='tot_result'>"+ response.total_results + "</span> konten");
-				if(sub_class != null){
-					$('#breadcrumb_subyek_sub_class').html(sub_class);
-					$('#breadcrumb_subyek_class').removeClass('active');
-					$('#breadcrumb_subyek_sub_class').addClass('active');
-					$('#breadcrumb_subyek_sub_class').css('display', 'block');
-					getSubjectClassDesc(sub_class);
-				} else {
-					$('#breadcrumb_subyek_sub_class').css('display', 'none');
-					$('#breadcrumb_subyek_sub_class').removeClass('active');
-					$('#breadcrumb_subyek_class').addClass('active');
-				}
-				if(class_ != null){
-					$('#breadcrumb_subyek_class').removeClass('active');
-					getSubjectClassDesc(class_);
-
-				} else {
-					$('#breadcrumb_subyek_class').addClass('active');
-				}
-				
-				$('#tot_result').digits();
-				createNavigation(parseInt(response.page), response.total_results, response.length, response.query);
-				
-				
-			},
-			error : function(){
-				alert("error!")
-			}
-		})
-	}
-	function getDetail(){
-		var id = getUrlParameter('id')
-		$.ajax({
-			url: base_url + "content/detail/" + id ,
-			method : 'GET',
-			dataType : 'json',
-			//async : false,
-			success : function(response){
-				$('#title').html(response.title);
-				$('#author').html(response.creator[0]);
-				$('#created_at').html(response.created_at.substring(0, 10));
-				$('#description').html(response.description);
-				$('#konten_embed').attr('src',response.link);
-				$('#type').html(response.type);
-				contentRelated(response);
-			},
-			error : function(){
-				alert("error!")
-			}
-		})
-	}
-	function contentRelated(data){
-		var page = getRandomInt(10);
-		getSubjectClassDesc(data.subject_sub_class);
-		$.ajax({
-			url: base_url + "content/search?sub-class=" + data.subject_sub_class + '&page='+ page+'&length=3&id=' + data.id + '&class=' + data.subject_class,
-			method : 'GET',
-			dataType : 'json',
-			async : false,
-			success : function(response){                        
-				$.each(response.results, function(index, value){
-					var html_element = "";
-					html_element += '<div class="col-lg-4 col-sm-6">';
-					html_element += '<div class="blog_grid_post wow fadeInUp" data-wow-delay="0.2s">';
-					if(value.link.includes("youtube")){
-						html_element += '<iframe width="100%" height="220" src="'+value.link+'"></iframe> ';  
-					} else {
-						html_element += '<img src="img/blog-grid/blog_grid_post2.jpg" alt="">';
-					}
-					html_element += '<div class="grid_post_content">';
-					if(value.type == 'video') {
-						html_element += '<div class="post_tag"><a class="cat-KbDoc orange" href="#">'+value.type+'</a></div>';
-					} else {
-						html_element += '<div class="post_tag"><a class="cat orange" href="#">'+value.type+'</a></div>';
-					}
-					html_element += '<a href="content-detail.html?id='+value.id+'"><h4 class="b_title">'+value.title+'</h4></a>';
-					html_element += '<p>'+ value.description.substring(0, 250)+'</p>';
-					html_element += '<div class="media post_author"><div class="round_img"><img src="img/blog-grid/author_2.jpg" alt=""></div>';
-					html_element += '<div class="media-body author_text"><a href="creator.html?q='+value.creator+'"><h4>'+value.creator+'</h4></a><div class="date">'+value.created_at+'</div></div></div></div></div></div>';
-					$('#content_related').append(html_element);
-				})              
-			},
-			error : function(){
-				alert("error!")
-			}
-		})
-	}
-	function getRandomInt(max) {
-		return Math.floor(Math.random() * max);
-	}
-	function getSubjectClassDesc(sub_class){
-		if(sub_class != null) {
-			if(sub_class.toString().length == 2) {
-				sub_class = "0" + sub_class;
-			}
-			$.ajax({
-				url: base_url + "content/get-subclass-desc" +"/" +sub_class,
-				method : 'GET',
-				dataType : 'json',
-				success : function(response){
-					$('#breadcrumb_subyek_class').html(response[0]);
-					$('#breadcrumb_subyek_sub_class').html(response[1]);
-				},
-				error : function(){
-					alert("error!")
-				}
-			});
-		} else {
-			$('#breadcrumb_subyek_class').html("Subyek");
-			$('#breadcrumb_subyek_sub_class').html();
-		}
-	}
-	function getDetailCreator(){
-		var creator = getUrlParameter('q');
-		$('#creator_name').html(creator);
-		$.ajax({
-			url: base_url + "user/detail?q=" + creator ,
-			method : 'GET',
-			dataType : 'json',
-			success : function(response){
-				$('#total_konten').html(response.total_konten + " konten");
-				$('#total_konten2').html(response.total_konten + " konten");
-				$('#total_video').html(response.video + " konten");
-				$('#total_artikel').html(response.artikel + " konten");      
-				
-			},
-			error : function(){
-				alert("error!")
-			}
-		})
-	}
-	function getCreatorContent(){
-		var creator = getUrlParameter('q');
-		$.ajax({
-			url: base_url + "user/content?q=" + creator ,
-			method : 'GET',
-			dataType : 'json',
-			//async : false,
-			success : function(response){                        
-				$.each(response.results, function(index, value){
-					var html_element = "";
-					html_element += '<div class="community-post style-two kbDoc richard bug"><div class="post-content"><div class="author-avatar">';
-					html_element += '<img src="img/home_support/rc15.png" alt="'+ value.creator +'"></div>';
-					html_element += '<div class="entry-content"><h3 class="post-title"><a href="content-detail.html?id='+value.id+'">'+value.title+'</a></h3>';
-					html_element += '<ul class="meta">';
-
-					if(value.link.includes("youtube")){
-						html_element += '<li><img src="img/home_support/cmm2.png" alt="cmm"><a href="'+value.link+'">Video</a></li><li><i class="icon_calendar"></i>updated 3 days ago</li></ul>';  
-					} else {
-						html_element += '<li><img src="img/home_support/cmm1.png" alt="cmm"><a href="'+value.link+'">Artikel</a></li><li><i class="icon_calendar"></i>updated 3 days ago</li></ul>';  
-					}
-					html_element += '</div></div></div>';
-					$('#list_content').append(html_element);
-				})              
-			},
-			error : function(){
-				alert("error!")
-			}
-		})
-	}
-	function getClassSubject(){
-		$.ajax({
-			url: base_url + "statistic/sub-class-all",
-			method : 'GET',
-			dataType : 'json',
-			success : function(response){
-				$.each(response, function(index, value){
-					$('#' + index).html(" (" + value + ")").digits();
-					$('#' + index).parent().click(function() {
-						window.location.href = "content-list.html?sub-class=" + index; 
-					})
-				})
-
-			},
-			error : function(){
-				alert("error!")
-			}
-		})
-	}
 
 })(jQuery);
