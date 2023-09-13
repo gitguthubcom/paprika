@@ -210,7 +210,7 @@
                         <div class="post-header">
                             <div class="support-info">
                                 <ul class="support-total-info">
-                                    <li class="open-ticket"><i class="icon_info_alt"></i>453 Posts</li>
+                                    <li class="open-ticket"><i class="icon_info_alt"></i><span id="total_konten2">453 Posts</span></li>
                                     <!-- <li class="close-ticket"><i class="icon_check"></i><a href="#">2,974 Closed</a></li> -->
                                 </ul>
                             </div>
@@ -712,6 +712,7 @@
                 dataType : 'json',
                 success : function(response){
                     $('#total_konten').html(response.total_konten + " konten");
+                    $('#total_konten2').html(response.total_konten + " konten");
                     $('#total_video').html(response.video + " konten");
                     $('#total_artikel').html(response.artikel + " konten");      
                     
