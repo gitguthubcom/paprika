@@ -378,7 +378,7 @@
 		navigation += '<span aria-current="page" class="page-numbers current" id="current">'+current+'</span>';
 		var max_page = Math.ceil(total/length), max_iter = current + 11;
 
-		for(i = current+1; i< max_iter; i++){
+		for(var i = current+1; i< max_iter; i++){
 			if(i < max_page + 1) {
 				navigation += '<a class="page-numbers" href="#">'+i+'</a>';
 			} else {
