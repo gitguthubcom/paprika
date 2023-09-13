@@ -495,34 +495,6 @@
     <script src="assets/wow/wow.min.js"></script>
     <script src="assets/tooltipster/js/tooltipster.bundle.min.js"></script>
     <script src="js/main.js"></script>
-    <script>
-        var base_url = "https://api-paprika.perpusnas.go.id/";
-        function getClass(){
-            $.ajax({
-                url: base_url + "statistic/sub-class-all",
-                method : 'GET',
-                dataType : 'json',
-                success : function(response){
-                    $.each(response, function(index, value){
-                        $('#' + index).html(" (" + value + ")").digits();
-                        $('#' + index).parent().click(function() {
-                            window.location.href = "content-list.html?sub-class=" + index; 
-                        })
-                    })
-
-                },
-                error : function(){
-                    alert("error!")
-                }
-            })
-        }
-        $.fn.digits = function(){ 
-            return this.each(function(){ 
-                $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
-            })
-        }
-        getClass();
-    </script>
 </body>
 
 </html>
