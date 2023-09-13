@@ -393,7 +393,7 @@
     <script src="assets/wow/wow.min.js"></script>
     <script src="js/main.js"></script>
     <script>
-        var base_url = "http://localhost:8000/"
+        var base_url = "https://api-paprika.perpusnas.go.id/";
         $.fn.digits = function(){ 
             return this.each(function(){ 
                 $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
@@ -462,7 +462,7 @@
                         html_element += '<a href="content-detail.html?id='+value.id+'"><h4 class="b_title">'+value.title+'</h4></a>';
                         html_element += '<p>'+ value.description.substring(0, 250)+'</p>';
                         html_element += '<div class="media post_author"><div class="round_img"><img src="img/blog-grid/author_2.jpg" alt=""></div>';
-                        html_element += '<div class="media-body author_text"><h4>'+value.creator+'</h4><div class="date">'+value.created_at+'</div></div></div></div></div></div>';
+                        html_element += '<div class="media-body author_text"><a href="creator.html?q='+value.creator+'"><h4>'+value.creator+'</h4></a><div class="date">'+value.created_at+'</div></div></div></div></div></div>';
                         $('#content_related').append(html_element);
                     })              
                 },
@@ -476,6 +476,9 @@
         }
         function getSubjectClassDesc(sub_class){
             if(sub_class != null) {
+                if(sub_class.toString().length == 2) {
+                    sub_class = "0" + sub_class;
+                }
                 $.ajax({
                     url: base_url + "content/get-subclass-desc" +"/" +sub_class,
                     method : 'GET',
