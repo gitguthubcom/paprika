@@ -136,8 +136,8 @@
                                 </div>
 
                                 <div class="kbDoc-com-box-content">
-                                    <h3 class="title"><a href="#"> Total Post</a></h3>
-                                    <p class="total-post">453 Posts</p>
+                                    <h3 class="title"><a href="#"> Total Konten</a></h3>
+                                    <p class="total-post" id="total_konten">453 Konten</p>
                                 </div>
                                 <!-- /.kbDoc-com-box-content -->
                             </div>
@@ -150,7 +150,7 @@
 
                                 <div class="kbDoc-com-box-content">
                                     <h3 class="title"><a href="#"> Artikel</a></h3>
-                                    <p class="total-post">62 Posts</p>
+                                    <p class="total-post" id="total_artikel">62 Konten</p>
                                 </div>
                                 <!-- /.kbDoc-com-box-content -->
                             </div>
@@ -163,7 +163,7 @@
 
                                 <div class="kbDoc-com-box-content">
                                     <h3 class="title"><a href="#"> Video</a></h3>
-                                    <p class="total-post">120 Posts</p>
+                                    <p class="total-post" id="total_video">120 Konten</p>
                                 </div>
                                 <!-- /.kbDoc-com-box-content -->
                             </div>
@@ -192,10 +192,10 @@
                                 </div>
 
                                 <div class="content">
-                                    <h2 class="ans-title">Nama User</h2>
-                                    <p>
+                                    <h2 class="ans-title" id="creator_name">Nama User</h2>
+                                    <!--<p>
                                         Direktorat Deposit
-                                    </p>
+                                    </p>-->
                                 </div>
                             </div>
                             <!-- /.action-content -->
@@ -727,6 +727,52 @@
     <script src="js/jquery.wavify.js"></script>
     <script src="assets/wow/wow.min.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        var base_url = "https://api-paprika.perpusnas.go.id/";
+        $.fn.digits = function(){ 
+            return this.each(function(){ 
+                $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
+            })
+        }
+        var getUrlParameter = function getUrlParameter(sParam) {
+                var sPageURL = window.location.search.substring(1),
+                    sURLVariables = sPageURL.split('&'),
+                    sParameterName,
+                    i;
+
+                for (i = 0; i < sURLVariables.length; i++) {
+                    sParameterName = sURLVariables[i].split('=');
+
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                    }
+                }
+            return false;
+        };
+       
+        function getDetail(){
+            var creator = getUrlParameter('q');
+            $('#creator_name').html(creator);
+            $.ajax({
+                url: base_url + "user/detail?q=" + creator ,
+                method : 'GET',
+                dataType : 'json',
+                success : function(response){
+                    $('#total_konten').html(response.total_konten + " konten");
+                    $('#total_video').html(response.video + " konten");
+                    $('#total_artikel').html(response.artikel + " konten");      
+                    
+                },
+                error : function(){
+                    alert("error!")
+                }
+            })
+        }
+        function getKonten(){
+            
+        }
+        getDetail();
+    </script>
 </body>
 
 </html>
