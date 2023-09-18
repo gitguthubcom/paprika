@@ -639,6 +639,7 @@
 			success : function(response){    
 				$('#list_content').html('');                    
 				$.each(response.results, function(index, value){
+					var date_created = moment(value.created_at).fromNow();
 					var html_element = "";
 					html_element += '<div class="community-post style-two kbDoc richard bug"><div class="post-content"><div class="author-avatar">';
 					html_element += '<img src="img/home_support/rc15.png" alt="'+ value.creator +'"></div>';
@@ -646,9 +647,9 @@
 					html_element += '<ul class="meta">';
 
 					if(value.link.includes("youtube")){
-						html_element += '<li><img src="img/home_support/cmm2.png" alt="cmm"><a href="'+value.link+'">Video</a></li><li><i class="icon_calendar"></i>updated 3 days ago</li></ul>';  
+						html_element += '<li><img src="img/home_support/cmm2.png" alt="cmm"><a href="'+value.link+'">Video</a></li><li><i class="icon_calendar"></i>updated ' +date_created+'</li></ul>';  
 					} else {
-						html_element += '<li><img src="img/home_support/cmm1.png" alt="cmm"><a href="'+value.link+'">Artikel</a></li><li><i class="icon_calendar"></i>updated 3 days ago</li></ul>';  
+						html_element += '<li><img src="img/home_support/cmm1.png" alt="cmm"><a href="'+value.link+'">Artikel</a></li><li><i class="icon_calendar"></i>updated ' +date_created+'</li></ul>';  
 					}
 					html_element += '</div></div></div>';
 					$('#list_content').append(html_element);
