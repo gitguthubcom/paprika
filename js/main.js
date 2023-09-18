@@ -14,7 +14,7 @@
 		didScroll = true;
 		scrollTop = $(this).scrollTop();
 	});
-	var base_url = "http://localhost:8000/";
+	var base_url = "https://api-paprika.perpusnas.go.id/";
 	setInterval(function () {
 		if (didScroll) {
 			hasScrolled();
@@ -1039,6 +1039,7 @@
 							datasets: datasets,
 							labels: labels
 						},
+						
 					});
 				});
             },
@@ -1046,6 +1047,22 @@
                 alert("error!")
             }
         })
+	}
+	function statsUnit(){
+		$.ajax({
+			url: base_url + "statistic/unit",
+			method : 'GET',
+			dataType : 'json',
+			success : function(response){
+				$('.total-post').each(function(){
+					var unit = $(this).attr('unit');
+					$(this).html(response[unit] + ' konten')
+				})
+			},
+			error : function(){
+				alert("error!")
+			}
+		});
 	}
 
 	/*function chartJs() {
@@ -1151,6 +1168,7 @@
 	$(window).on("load", function () {
 		//chartJs();
 		statsMonth();
+		statsUnit();
 	});
 
 	function general() {
