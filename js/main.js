@@ -629,15 +629,17 @@
 			}
 		})
 	}
-	function getCreatorContent(){
+	function getCreatorContent(page = 1){
 		var creator = getUrlParameter('q');
 		$.ajax({
-			url: base_url + "user/content?q=" + creator ,
+			url: base_url + "user/content?q=" + creator +'&page=' + page,
 			method : 'GET',
 			dataType : 'json',
 			//async : false,
-			success : function(response){                        
+			success : function(response){    
+				$('#list_content').html('');                    
 				$.each(response.results, function(index, value){
+					var date_created = moment(value.created_at).fromNow();
 					var html_element = "";
 					html_element += '<div class="community-post style-two kbDoc richard bug"><div class="post-content"><div class="author-avatar">';
 					html_element += '<img src="img/home_support/rc15.png" alt="'+ value.creator +'"></div>';
@@ -645,18 +647,44 @@
 					html_element += '<ul class="meta">';
 
 					if(value.link.includes("youtube")){
-						html_element += '<li><img src="img/home_support/cmm2.png" alt="cmm"><a href="'+value.link+'">Video</a></li><li><i class="icon_calendar"></i>updated 3 days ago</li></ul>';  
+						html_element += '<li><img src="img/home_support/cmm2.png" alt="cmm"><a href="'+value.link+'">Video</a></li><li><i class="icon_calendar"></i>updated ' +date_created+'</li></ul>';  
 					} else {
-						html_element += '<li><img src="img/home_support/cmm1.png" alt="cmm"><a href="'+value.link+'">Artikel</a></li><li><i class="icon_calendar"></i>updated 3 days ago</li></ul>';  
+						html_element += '<li><img src="img/home_support/cmm1.png" alt="cmm"><a href="'+value.link+'">Artikel</a></li><li><i class="icon_calendar"></i>updated ' +date_created+'</li></ul>';  
 					}
 					html_element += '</div></div></div>';
 					$('#list_content').append(html_element);
-				})              
+				})
+				getCreatorContentNavigation(parseInt(response.page), response.total_results, response.length);            
 			},
 			error : function(){
 				alert("error!")
 			}
 		})
+	}
+	function getCreatorContentNavigation(current, total, length){
+		var navigation = '<div class="view-post-of"><p>Viewing 5 contents of ' + total +' total</p></div><ul class="post-pagination">';
+		if(current > 1) {
+			navigation += '<li class="prev-post pegi-disable"><a href="#"><i class="arrow_carrot-left"></i></a></li>';
+		}
+		navigation += '<li><a href="#creator_name" class="active">'+current+'</a></li>';
+		var max_page = Math.ceil(total/length), max_iter = current + 5;
+
+		for(var i = current+1; i< max_iter; i++){
+			if(i < max_page + 1) {
+				navigation += '<li><a href="#creator_name" class="numbers">'+i+'</a></li>';
+			} else {
+				break;
+			}
+		}
+		navigation += '<li class="next-post"><a href="#"><i class="arrow_carrot-right"></i></a></li>';
+		navigation += '</ul></div>';
+		$('#pagination_wrapper').html(navigation);
+		bindCreatorNavEvent();
+	}
+	function bindCreatorNavEvent() {
+		$('.numbers').on('click', function(){
+			getCreatorContent($(this).html());
+		});
 	}
 	function getClassSubject(){
 		$.ajax({
