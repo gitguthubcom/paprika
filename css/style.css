@@ -144,6 +144,17 @@ table tr td p:last-child {
   font-weight: 500;
 }
 
+.frame-area {
+  display: block;
+  width: 100%;  /* RESPONSIVE WIDTH */
+  max-width: auto;
+  height: 1500px;
+  overflow: auto;  /* EDIT TO hidden FOR NO SCROLLBAR */
+  border: #999999 1px solid;
+  margin: 0px;
+  padding: 0px;
+  }
+
 .regular {
   font-weight: 400;
 }
