@@ -982,9 +982,90 @@
 	}
 
 	fAqactive();
+	function getRandomColor() {
+		var letters = '0123456789ABCDEF';
+		var color = '#';
+		for (var i = 0; i < 6; i++) {
+		  color += letters[Math.floor(Math.random() * 16)];
+		}
+		return color;
+	  }
+	  
+	function statsMonth(){
+		var windowSize = $(window).width();
 
+		if (windowSize <= 767) {
+			var leg = true,
+				ratio = false;
+		} else {
+			var leg = false,
+				ratio = true;
+		}
+		var now = new Date();
+		var strDate = now.getFullYear() + "-" + (now.getMonth()) + "-" + (now.getDate()+1);
+		var labels = [], data = [], background = [], datasets = [];
+		$.ajax({
+            url: base_url + "statistic/date?date_type=bulanan&date_start=2023-01-01&date_end=" + strDate,
+            method : 'GET',
+            dataType : 'json',
+            success : function(response){
+				$('#info_bulanan').append('<p>Data bulanan Tahun 2023</p>');
+				response.forEach(function(items){
+					labels.push(items.key);
+					data.push(items.val);
+					background.push(getRandomColor());
+					
+					$('#info_bulanan').append('<li>' + items.key +' = <span class="items">'+ items.val +' konten</span></li>');
+				});
+				$('.items').digits();
+				datasets.push({
+					data: data,
+					//backgroundColor: background,
+					borderWidth: 0,
+					fill: false,
+					borderColor: 'rgb(75, 192, 192)',
+					tension: 0.1,
+					label : 'Jumlah Konten'
+				});
+				
+				$('#kbDoc-chart').each(function () {
+					var canvas = $('#kbDoc-chart');
+					canvas.attr('height', 125);
+					var chart = new Chart(canvas, {
+						type: 'line',
+						borderWidth: 0,
+						hover: true,
+						data: {
+							datasets: datasets,
+							labels: labels
+						},
+						
+					});
+				});
+            },
+            error : function(){
+                alert("error!")
+            }
+        })
+	}
+	function statsUnit(){
+		$.ajax({
+			url: base_url + "statistic/unit",
+			method : 'GET',
+			dataType : 'json',
+			success : function(response){
+				$('.total-post').each(function(){
+					var unit = $(this).attr('unit');
+					$(this).html(response[unit] + ' konten')
+				})
+			},
+			error : function(){
+				alert("error!")
+			}
+		});
+	}
 
-	function chartJs() {
+	/*function chartJs() {
 
 		var windowSize = $(window).width();
 
@@ -1083,9 +1164,11 @@
 			});
 		});
 	}
-
+	*/
 	$(window).on("load", function () {
-		chartJs();
+		//chartJs();
+		statsMonth();
+		statsUnit();
 	});
 
 	function general() {
