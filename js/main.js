@@ -392,16 +392,15 @@
 		bindNavEvent(current, query);
 
 	}
-	function bindNavEvent(current, query) {
-	   
+	function bindNavEvent(current, query) { 
 		$('.page-numbers').on('click', function(){
-			window.location.href = removeDuplicateparam("content-list.html?q="+ query + "&page=" + $(this).html()); 
+			window.location.href = removeDuplicateparam("content-list.html?"+ query + "&page=" + $(this).html()); 
 		});
 		$('#left-arrow').on('click', function(){
-			window.location.href = removeDuplicateparam("content-list.html?q="+ query + "&page=" + $(this).html()); 
+			window.location.href = removeDuplicateparam("content-list.html?"+ query + "&page=" + $(this).html()); 
 		});
 		$('#txt_page_number').on('change', function(){
-			window.location.href = removeDuplicateparam("content-list.html?q="+ query + "&page=" + $(this).val()); 
+			window.location.href = removeDuplicateparam("content-list.html?"+ query + "&page=" + $(this).val()); 
 		});
 		$('#txt_page_number').val(current);
 	}
